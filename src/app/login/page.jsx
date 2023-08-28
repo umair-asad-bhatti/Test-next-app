@@ -6,13 +6,31 @@ import { joiResolver } from '@hookform/resolvers/joi'
 import loginschema from '@/helper/joiloginschema'
 
 const Page = () => {
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm(
+    const { register, handleSubmit, reset, setError, formState: { errors, isSubmitting } } = useForm(
         {
             resolver: joiResolver(loginschema),
+            defaultValues: {
+                email: "",
+                password: ""
+            }
 
         })
     const onLoginSubmit = async (data) => {
-        console.log(data);
+        const response = await fetch('/api/login', {
+            method: 'post',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        });
+        const server_data = await response.json()
+        if (server_data.errors) {
+            console.log(server_data);
+            setError(server_data.errors.context.key, { type: server_data.errors.type, message: server_data.errors.message });
+            return;
+        }
+        console.log(server_data);
+        reset()
 
     }
     return (
@@ -30,8 +48,9 @@ const Page = () => {
                     {errors.password && <p className='text-red-400'>{errors.password.message}</p>}
                 </div>
                 {
-                    !isSubmitting &&
-                    <input className='block w-[100%] hover:bg-blue-600 cursor-pointer bg-blue-500 px-2 py-1 my-4 text-white shaodw rounded' type="submit" value="submit" />
+                    isSubmitting ?
+                        <input disabled className='block w-[100%]  bg-slate-500 px-2 py-1 my-4 text-white text-center' value="Logging in..." />
+                        : <input className='block w-[100%] hover:bg-blue-600 cursor-pointer bg-blue-500 px-2 py-1 my-4 text-white shaodw rounded' type="submit" value="Log in" />
                 }
             </form >
         </div >
