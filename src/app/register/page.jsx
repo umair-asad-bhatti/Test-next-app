@@ -71,7 +71,7 @@ const Page = () => {
 
                 </div>
                 {
-                    isSubmitting ?
+                        isSubmitting ?
                         <input disabled type='submit' value={"submitting..."} className='block w-[100%] bg-slate-500 px-2 py-1 my-4 text-white shaodw rounded' />
                         :
                         <input className='block w-[100%] hover:bg-blue-600 cursor-pointer bg-blue-500 px-2 py-1 my-4 text-white shaodw rounded' type="submit" value={'submit'} />
